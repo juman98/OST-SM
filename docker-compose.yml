@@ -42,8 +42,8 @@ services:
       - influxdb:/var/lib/influxdb
     environment:
       INFLUXDB_DB: mydb
-      INFLUXDB_ADMIN_USER: admin
-      INFLUXDB_ADMIN_PASSWORD: adminpassword
+      INFLUXDB_ADMIN_USER_TOKEN: admin
+      INFLUXDB_ADMIN_USER_PASSWORD: adminpassword
 
   # Framework for data visualization
   grafana:
@@ -76,8 +76,6 @@ services:
     user: 1000:100
     ports:
       - 8888:8888
-    volumes:
-       - ./spark:/home/jovyan
     depends_on:
       - influxdb
 
