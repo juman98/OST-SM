@@ -33,7 +33,7 @@ services:
       APPLICATION_SECRET: "random-secret"
 
   # Influx DB Server
-   influxdb:
+  influxdb:
     image: influxdb:latest
     ports:
       - "8086:8086"
