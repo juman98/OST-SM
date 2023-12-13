@@ -24,9 +24,13 @@ def consume_write(message_value):
     num_data += 1
     print(num_data, message_value)
 
-def produce_to_kafka(message_value):
-    # send the message to the Kafka producer
+def produce_to_kafka(message_value, results):
+      # Add the modules results to the message
+    for key, value in results.items():
+        message_value[key] = value
+    # Send the modified message to the Kafka producer
     producer.produce(topic=output_topic, value=json.dumps(message_value).encode('utf-8'))
+
 
 # Replace with your Kafka bootstrap servers
 bootstrap_servers = 'kafka:9092'
@@ -69,11 +73,21 @@ if consumer is not None:
             else:
                 timeout = 10.0
                 # Proper message
-                print(f"Received message: {msg.value().decode('utf-8')}")
-                message_value = json.loads(msg.value().decode('utf-8'))
-                #add the modle
+                   message_value = json.loads(msg.value().decode('utf-8'))
                 consume_write(message_value)
-                produce_to_kafka(message_value)
+                # Aggregate results from different functions
+                results = {
+                #this is the first module that I created
+                'flajolet_martin': flajolet_martin(message_value),
+                # here ypu can add yours
+                #'result2': module2(message_value),
+                #'result3': module3(message_value),
+                #'result4': module4(message_value)
+            }
+                # Send the modules results to the output topic
+                produce_to_kafka(message_value, results)
+                # print(f"Received message: {msg.value().decode('utf-8')}")
+
 
     finally:
         consumer.close()
